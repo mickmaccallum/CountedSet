@@ -33,6 +33,7 @@ class SetsTests: XCTestCase {
         }
 
         print(countedSet)
+        XCTAssert(countedSet.count == 16)
     }
 
     func testRemove() {
@@ -49,6 +50,23 @@ class SetsTests: XCTestCase {
 
         print(countedSet)
         XCTAssert(countedSet.count == 1)
+    }
+
+    func testCountForObject() {
+        var countedSet = CountedSet<Int>([1, 2, 3, 4, 5])
+
+        XCTAssert(countedSet.countForObject(3) == 1)
+
+        countedSet.insert(3)
+        countedSet.insert(3)
+
+        XCTAssert(countedSet.countForObject(3) == 3)
+
+        countedSet.remove(3)
+        countedSet.remove(3)
+        countedSet.remove(3)
+
+        XCTAssert(countedSet.countForObject(3) == 0)
     }
 
     func testUnion() {
@@ -145,6 +163,18 @@ class SetsTests: XCTestCase {
         appleSet1
     }
 
+    func testSubtract() {
+        let countedSet1 = CountedSet<Int>([1, 2, 3, 1, 2])
+        let countedSet2 = CountedSet<Int>([1, 2])
+
+        XCTAssert(countedSet1.countForObject(1) == 2)
+
+        let subtracted = countedSet1.subtract(countedSet2)
+
+        XCTAssert(subtracted.count == 3)
+        XCTAssert(subtracted.countForObject(1) == 1)
+    }
+
     func testIsEmpty() {
         var countedSet1 = CountedSet<Int>()
 
@@ -175,11 +205,55 @@ class SetsTests: XCTestCase {
         XCTAssert(countedSet1.count == 1)
     }
 
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock {
-            // Put the code you want to measure the time of here.
-        }
+    func testSubsets() {
+        let countedSet1 = CountedSet<Int>([1, 2, 3])
+        let countedSet2 = CountedSet<Int>([1, 2, 3])
+
+        XCTAssert(countedSet2.isSubsetOf(countedSet1))
+        XCTAssert(!countedSet2.isStrictSubsetOf(countedSet1))
     }
-    
+
+    func testSupersets() {
+        let countedSet1 = CountedSet<Int>([1, 2, 3])
+        let countedSet2 = CountedSet<Int>([1, 2, 3])
+
+        XCTAssert(countedSet1.isSupersetOf(countedSet2))
+        XCTAssert(!countedSet1.isStrictSupersetOf(countedSet2))
+    }
+
+    func testSubsumes() {
+        let a = 42
+        let b = 42
+        let c = 17
+
+        XCTAssert(CountedSet.element(a, subsumes: b))
+        XCTAssert(!CountedSet.element(a, subsumes: c))
+    }
+
+    func testSetIsDisjoint() {
+        let countedSet1 = CountedSet<Int>([1, 2, 3])
+        let countedSet2 = CountedSet<Int>([4, 5, 6])
+        let countedSet3 = CountedSet<Int>([3, 4])
+
+        XCTAssert(countedSet1.isDisjointWith(countedSet2))
+        XCTAssert(!countedSet1.isDisjointWith(countedSet3))
+    }
+
+    func testIsDisjoint() {
+        let a = 4
+        let b = 5
+        let c = 4
+
+        XCTAssert(CountedSet.element(a, isDisjointWith: b))
+        XCTAssert(!CountedSet.element(a, isDisjointWith: c))
+    }
+
+    func testEquality() {
+        let countedSet1 = CountedSet<Int>([1, 2, 3])
+        let countedSet2 = CountedSet<Int>([1, 2, 3])
+        let countedSet3 = CountedSet<Int>([4, 5, 6])
+
+        XCTAssert(countedSet1 == countedSet2)
+        XCTAssert(countedSet1 != countedSet3)
+    }
 }
