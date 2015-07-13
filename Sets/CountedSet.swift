@@ -137,8 +137,14 @@ public struct CountedSet<T : Hashable> : SetAlgebraType {
     }
 
     public mutating func subtractInPlace(other: CountedSet<Element>) {
-        for (key, _) in other.backingDictionary {
-            backingDictionary.removeValueForKey(key)
+        for (key, value) in other.backingDictionary {
+            if let existingValue = backingDictionary[key] {
+                if value >= existingValue {
+                    backingDictionary.removeValueForKey(key)
+                } else {
+                    backingDictionary[key] = existingValue - value
+                }
+            }
         }
     }
 
