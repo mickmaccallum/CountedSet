@@ -6,17 +6,14 @@
 //  Copyright © 2015 0x7fffffff. All rights reserved.
 //
 
-import Swift
-import Foundation
-
-public struct CountedSet<T: Hashable>: SetAlgebraType {
+public struct CountedSet<T : Hashable> : SetAlgebraType {
     typealias Element = T
     typealias Index = SetIndex<Element>
     typealias GeneratorType = SetGenerator<Element>
 
     private var backingDictionary = [Element : Int]()
 
-    public var count: Int {
+    public var count: CountedSet.Index.Distance {
         return backingDictionary.count
     }
 
@@ -28,12 +25,12 @@ public struct CountedSet<T: Hashable>: SetAlgebraType {
         // yay protocol conformance
     }
 
-    public init(countedSet: CountedSet<T>) {
-        backingDictionary = countedSet.backingDictionary
+    public init(object: Element) {
+        insert(object)
     }
 
-    public func countForObject(object: Element) -> Int {
-        return backingDictionary[object] ?? 0
+    public init(countedSet: CountedSet<Element>) {
+        backingDictionary = countedSet.backingDictionary
     }
 
     public init(arrayLiteral elements: CountedSet.Element...) {
@@ -46,6 +43,10 @@ public struct CountedSet<T: Hashable>: SetAlgebraType {
         for member in sequence {
             insert(member)
         }
+    }
+
+    public func countForObject(object: Element) -> Int {
+        return backingDictionary[object] ?? 0
     }
 
     public func contains(member: CountedSet.Element) -> Bool {
