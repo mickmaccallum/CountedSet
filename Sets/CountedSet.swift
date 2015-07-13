@@ -86,7 +86,7 @@ public struct CountedSet<T : Hashable> : SetAlgebraType {
     }
 
     public func union(other: CountedSet<Element>) -> CountedSet<Element> {
-        var unionized = CountedSet<Element>(countedSet: self)
+        var unionized = self
         unionized.unionInPlace(other)
 
         return unionized
@@ -113,7 +113,7 @@ public struct CountedSet<T : Hashable> : SetAlgebraType {
     }
 
     public func intersect(other: CountedSet<Element>) -> CountedSet<Element> {
-        var intersected = CountedSet<Element>(countedSet: self)
+        var intersected = self
         intersected.intersectInPlace(other)
 
         return intersected
@@ -130,7 +130,7 @@ public struct CountedSet<T : Hashable> : SetAlgebraType {
     }
 
     public func exclusiveOr(other: CountedSet<Element>) -> CountedSet<Element> {
-        var xored = CountedSet<Element>(countedSet: self)
+        var xored = self
         xored.exclusiveOrInPlace(other)
 
         return xored
