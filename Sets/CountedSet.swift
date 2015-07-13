@@ -101,6 +101,16 @@ public struct CountedSet<T: Hashable>: SetAlgebraType {
         }
     }
 
+    public func intersectsSet(other: CountedSet<Element>) -> Bool {
+        for (key, _) in other.backingDictionary {
+            if backingDictionary[key] != nil {
+                return true
+            }
+        }
+
+        return false
+    }
+
     public func intersect(other: CountedSet<Element>) -> CountedSet<Element> {
         var intersected = CountedSet<Element>(countedSet: self)
         intersected.intersectInPlace(other)
