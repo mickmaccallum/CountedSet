@@ -10,6 +10,7 @@
 		0096540E1B53366A003C4028 /* Sets.h in Headers */ = {isa = PBXBuildFile; fileRef = 0096540D1B53366A003C4028 /* Sets.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		009654151B53366A003C4028 /* Sets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0096540A1B53366A003C4028 /* Sets.framework */; };
 		0096541A1B53366A003C4028 /* SetsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009654191B53366A003C4028 /* SetsTests.swift */; };
+		009654251B53367D003C4028 /* CountedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009654241B53367D003C4028 /* CountedSet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +30,7 @@
 		009654141B53366A003C4028 /* SetsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SetsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		009654191B53366A003C4028 /* SetsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetsTests.swift; sourceTree = "<group>"; };
 		0096541B1B53366A003C4028 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		009654241B53367D003C4028 /* CountedSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountedSet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				0096540D1B53366A003C4028 /* Sets.h */,
+				009654241B53367D003C4028 /* CountedSet.swift */,
 				0096540F1B53366A003C4028 /* Info.plist */,
 			);
 			path = Sets;
@@ -142,6 +145,7 @@
 		009654011B53366A003C4028 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = 0x7fffffff;
 				TargetAttributes = {
@@ -193,6 +197,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				009654251B53367D003C4028 /* CountedSet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -307,6 +312,7 @@
 		0096541F1B53366A003C4028 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -317,12 +323,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.0x7fffffff.Sets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		009654201B53366A003C4028 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -333,6 +341,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.0x7fffffff.Sets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};
@@ -375,6 +384,7 @@
 				009654201B53366A003C4028 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		009654211B53366A003C4028 /* Build configuration list for PBXNativeTarget "SetsTests" */ = {
 			isa = XCConfigurationList;
@@ -383,6 +393,7 @@
 				009654231B53366A003C4028 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
