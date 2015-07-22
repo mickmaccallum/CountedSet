@@ -7,7 +7,7 @@
 //
 
 public struct CountedSet<T : Hashable> : SetAlgebraType {
-    typealias Element = T
+    public typealias Element = T
     typealias Index = SetIndex<Element>
     typealias GeneratorType = SetGenerator<Element>
 
