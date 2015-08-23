@@ -6,12 +6,12 @@
 //  Copyright © 2015 0x7fffffff. All rights reserved.
 //
 
-public struct CountedSet<T : Hashable> : SetAlgebraType {
+public struct CountedSet<T: Hashable>: SetAlgebraType {
     public typealias Element = T
     typealias Index = SetIndex<Element>
     typealias GeneratorType = SetGenerator<Element>
 
-    private var backingDictionary = [Element : Int]()
+    private var backingDictionary = [Element: Int]()
 
     public var count: CountedSet.Index.Distance {
         return backingDictionary.count
@@ -39,7 +39,7 @@ public struct CountedSet<T : Hashable> : SetAlgebraType {
         }
     }
 
-    public init<S : SequenceType where S.Generator.Element == Element>(_ sequence: S) {
+    public init<S: SequenceType where S.Generator.Element == Element>(_ sequence: S) {
         for member in sequence {
             insert(member)
         }
@@ -50,7 +50,7 @@ public struct CountedSet<T : Hashable> : SetAlgebraType {
     }
 
     public func contains(member: CountedSet.Element) -> Bool {
-        return backingDictionary[member] != .None
+        return backingDictionary[member] != nil
     }
 
     public mutating func insert(member: CountedSet.Element) {
@@ -62,17 +62,17 @@ public struct CountedSet<T : Hashable> : SetAlgebraType {
     }
 
     public mutating func remove(member: CountedSet.Element) -> CountedSet.Element? {
-        if let value = backingDictionary[member] {
-            if value > 1 {
-                backingDictionary[member] = value - 1
-            } else {
-                backingDictionary.removeValueForKey(member)
-            }
-
-            return member
+        guard let value = backingDictionary[member] else {
+            return nil
         }
 
-        return nil
+        if value > 1 {
+            backingDictionary[member] = value - 1
+        } else {
+            backingDictionary.removeValueForKey(member)
+        }
+
+        return member
     }
 
     public mutating func unionInPlace(other: CountedSet<Element>) {
@@ -104,7 +104,7 @@ public struct CountedSet<T : Hashable> : SetAlgebraType {
 
     public func intersectsSet(other: CountedSet<Element>) -> Bool {
         for (key, _) in other.backingDictionary {
-            if backingDictionary[key] != .None {
+            if let _ = backingDictionary[key] {
                 return true
             }
         }
@@ -121,10 +121,10 @@ public struct CountedSet<T : Hashable> : SetAlgebraType {
 
     public mutating func exclusiveOrInPlace(other: CountedSet<Element>) {
         for (key, value) in other.backingDictionary {
-            if backingDictionary[key] == .None {
-                backingDictionary[key] = value
-            } else {
+            if let _ = backingDictionary[key] {
                 backingDictionary.removeValueForKey(key)
+            } else {
+                backingDictionary[key] = value
             }
         }
     }
@@ -138,12 +138,14 @@ public struct CountedSet<T : Hashable> : SetAlgebraType {
 
     public mutating func subtractInPlace(other: CountedSet<Element>) {
         for (key, value) in other.backingDictionary {
-            if let existingValue = backingDictionary[key] {
-                if value >= existingValue {
-                    backingDictionary.removeValueForKey(key)
-                } else {
-                    backingDictionary[key] = existingValue - value
-                }
+            guard let existingValue = backingDictionary[key] else {
+                continue
+            }
+
+            if value >= existingValue {
+                backingDictionary.removeValueForKey(key)
+            } else {
+                backingDictionary[key] = existingValue - value
             }
         }
     }
@@ -157,7 +159,7 @@ public struct CountedSet<T : Hashable> : SetAlgebraType {
 
     public func isSubsetOf(other: CountedSet<Element>) -> Bool {
         for (key, _) in backingDictionary {
-            if other.backingDictionary[key] == .None {
+            if let _ = other.backingDictionary[key] {
                 return false
             }
         }
@@ -171,7 +173,7 @@ public struct CountedSet<T : Hashable> : SetAlgebraType {
 
     public func isSupersetOf(other: CountedSet<Element>) -> Bool {
         for (key, _) in other.backingDictionary {
-            if backingDictionary[key] == .None {
+            if let _ = backingDictionary[key] {
                 return false
             }
         }
