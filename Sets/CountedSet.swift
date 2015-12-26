@@ -45,17 +45,19 @@ public struct CountedSet<T: Hashable>: SetAlgebraType {
         }
     }
 
+    @warn_unused_result
     public func countForObject(object: Element) -> Int {
         return backingDictionary[object] ?? 0
     }
 
+    @warn_unused_result
     public func contains(member: CountedSet.Element) -> Bool {
         return backingDictionary[member] != nil
     }
 
     public mutating func insert(member: CountedSet.Element) {
         if let existing = backingDictionary[member] {
-            backingDictionary[member] = existing + 1
+            backingDictionary[member] = existing.successor()
         } else {
             backingDictionary[member] = 1
         }
@@ -67,7 +69,7 @@ public struct CountedSet<T: Hashable>: SetAlgebraType {
         }
 
         if value > 1 {
-            backingDictionary[member] = value - 1
+            backingDictionary[member] = value.predecessor()
         } else {
             backingDictionary.removeValueForKey(member)
         }
