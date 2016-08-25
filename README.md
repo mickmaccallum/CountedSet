@@ -1,6 +1,6 @@
 ## CountedSet
 
-A generic Swift counted set (multiset) implementation. This structure has been built to conform to Swift 2's SetAlgebraType protocol.
+A generic Swift counted set (multiset) implementation. This structure has been built to conform to Swift 2's SetAlgebraType protocol. See the swift-3 branch for the matching Swift 3 implementation.
 
 ## Usage
 
