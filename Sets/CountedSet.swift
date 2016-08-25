@@ -6,14 +6,14 @@
 //  Copyright © 2015 0x7fffffff. All rights reserved.
 //
 
-public struct CountedSet<T: Hashable>: SetAlgebraType {
+public struct CountedSet<T: Hashable>: SetAlgebra {
     public typealias Element = T
-    typealias Index = SetIndex<Element>
-    typealias GeneratorType = SetGenerator<Element>
+    public typealias Index = SetIndex<Element>
+    typealias GeneratorType = SetIterator<Element>
 
-    private var backingDictionary = [Element: Int]()
+    fileprivate var backingDictionary = [Element: Int]()
 
-    public var count: CountedSet.Index.Distance {
+    public var count: Int {
         return backingDictionary.count
     }
 
@@ -34,50 +34,68 @@ public struct CountedSet<T: Hashable>: SetAlgebraType {
     }
 
     public init(arrayLiteral elements: CountedSet.Element...) {
-        for member in elements {
-            insert(member)
-        }
+		insert(members: elements)
+	}
+
+    public init<S: Sequence>(_ sequence: S) where S.Iterator.Element == Element {
+		insert(members: sequence as! [T])
     }
 
-    public init<S: SequenceType where S.Generator.Element == Element>(_ sequence: S) {
-        for member in sequence {
-            insert(member)
-        }
-    }
-
-    @warn_unused_result
-    public func countForObject(object: Element) -> Int {
+    public func countForObject(_ object: Element) -> Int {
         return backingDictionary[object] ?? 0
     }
 
-    @warn_unused_result
-    public func contains(member: CountedSet.Element) -> Bool {
+    public func contains(_ member: CountedSet.Element) -> Bool {
         return backingDictionary[member] != nil
     }
 
-    public mutating func insert(member: CountedSet.Element) {
-        if let existing = backingDictionary[member] {
-            backingDictionary[member] = existing.successor()
-        } else {
-            backingDictionary[member] = 1
-        }
-    }
+	private mutating func insert(members: [T]) {
+		for member in members {
+			let (inserted, existing) = insert(member)
 
-    public mutating func remove(member: CountedSet.Element) -> CountedSet.Element? {
+			if !inserted {
+				update(with: existing)
+			}
+		}
+	}
+
+	@discardableResult
+	public mutating func insert(_ newMember: T) -> (inserted: Bool, memberAfterInsert: T) {
+		if backingDictionary.keys.contains(newMember) {
+			return (false, newMember)
+		} else {
+			backingDictionary[newMember] = 1
+			return (true, newMember)
+		}
+	}
+
+	@discardableResult
+	public mutating func update(with newMember: T) -> T? {
+		if let existing = backingDictionary[newMember] {
+			backingDictionary[newMember] = (existing + 1)
+			return newMember
+		} else {
+			backingDictionary[newMember] = 1
+			return nil
+		}
+	}
+
+	@discardableResult
+    public mutating func remove(_ member: CountedSet.Element) -> CountedSet.Element? {
         guard let value = backingDictionary[member] else {
             return nil
         }
 
         if value > 1 {
-            backingDictionary[member] = value.predecessor()
+            backingDictionary[member] = (value - 1)
         } else {
-            backingDictionary.removeValueForKey(member)
+            backingDictionary.removeValue(forKey: member)
         }
 
         return member
     }
 
-    public mutating func unionInPlace(other: CountedSet<Element>) {
+    public mutating func formUnion(_ other: CountedSet<Element>) {
         for (key, value) in other.backingDictionary {
             if let existingValue = backingDictionary[key] {
                 backingDictionary[key] = existingValue + value
@@ -87,24 +105,24 @@ public struct CountedSet<T: Hashable>: SetAlgebraType {
         }
     }
 
-    public func union(other: CountedSet<Element>) -> CountedSet<Element> {
+    public func union(_ other: CountedSet<Element>) -> CountedSet<Element> {
         var unionized = self
-        unionized.unionInPlace(other)
+        unionized.formUnion(other)
 
         return unionized
     }
 
-    public mutating func intersectInPlace(other: CountedSet<Element>) {
+    public mutating func formIntersection(_ other: CountedSet<Element>) {
         for (key, value) in backingDictionary {
             if let existingValue = other.backingDictionary[key] {
                 backingDictionary[key] = existingValue + value
             } else {
-                backingDictionary.removeValueForKey(key)
+                backingDictionary.removeValue(forKey: key)
             }
         }
     }
 
-    public func intersectsSet(other: CountedSet<Element>) -> Bool {
+    public func intersectsSet(_ other: CountedSet<Element>) -> Bool {
         for (key, _) in other.backingDictionary {
             if let _ = backingDictionary[key] {
                 return true
@@ -114,88 +132,88 @@ public struct CountedSet<T: Hashable>: SetAlgebraType {
         return false
     }
 
-    public func intersect(other: CountedSet<Element>) -> CountedSet<Element> {
+    public func intersection(_ other: CountedSet<Element>) -> CountedSet<Element> {
         var intersected = self
-        intersected.intersectInPlace(other)
+        intersected.formIntersection(other)
 
         return intersected
     }
 
-    public mutating func exclusiveOrInPlace(other: CountedSet<Element>) {
+    public mutating func formSymmetricDifference(_ other: CountedSet<Element>) {
         for (key, value) in other.backingDictionary {
             if let _ = backingDictionary[key] {
-                backingDictionary.removeValueForKey(key)
+                backingDictionary.removeValue(forKey: key)
             } else {
                 backingDictionary[key] = value
             }
         }
     }
 
-    public func exclusiveOr(other: CountedSet<Element>) -> CountedSet<Element> {
+    public func symmetricDifference(_ other: CountedSet<Element>) -> CountedSet<Element> {
         var xored = self
-        xored.exclusiveOrInPlace(other)
+        xored.formSymmetricDifference(other)
 
         return xored
     }
 
-    public mutating func subtractInPlace(other: CountedSet<Element>) {
+    public mutating func subtract(_ other: CountedSet<Element>) {
         for (key, value) in other.backingDictionary {
             guard let existingValue = backingDictionary[key] else {
                 continue
             }
 
             if value >= existingValue {
-                backingDictionary.removeValueForKey(key)
+                backingDictionary.removeValue(forKey: key)
             } else {
                 backingDictionary[key] = existingValue - value
             }
         }
     }
 
-    public func subtract(other: CountedSet<Element>) -> CountedSet<Element> {
+    public func subtracting(_ other: CountedSet<Element>) -> CountedSet<Element> {
         var subtracted = self
-        subtracted.subtractInPlace(other)
+        subtracted.subtract(other)
         
         return subtracted
     }
 
-    public func isSubsetOf(other: CountedSet<Element>) -> Bool {
+    public func isSubset(of other: CountedSet<Element>) -> Bool {
         for (key, _) in backingDictionary {
-            if let _ = other.backingDictionary[key] {
-                return false
-            }
+			if !other.backingDictionary.keys.contains(key) {
+				return false
+			}
         }
 
         return true
     }
 
-    public func isDisjointWith(other: CountedSet<Element>) -> Bool {
-        return intersect(other).isEmpty
+    public func isDisjoint(with other: CountedSet<Element>) -> Bool {
+        return intersection(other).isEmpty
     }
 
-    public func isSupersetOf(other: CountedSet<Element>) -> Bool {
+    public func isSuperset(of other: CountedSet<Element>) -> Bool {
         for (key, _) in other.backingDictionary {
-            if let _ = backingDictionary[key] {
-                return false
-            }
+			if !backingDictionary.keys.contains(key) {
+				return false
+			}
         }
 
         return true
     }
 
-    public func isStrictSupersetOf(other: CountedSet<Element>) -> Bool {
-        return isSupersetOf(other) && count > other.count
+    public func isStrictSupersetOf(_ other: CountedSet<Element>) -> Bool {
+        return isSuperset(of: other) && count > other.count
     }
 
-    public func isStrictSubsetOf(other: CountedSet<Element>) -> Bool {
-        return isSubsetOf(other) && count < other.count
+    public func isStrictSubsetOf(_ other: CountedSet<Element>) -> Bool {
+        return isSubset(of: other) && count < other.count
     }
 
-    public static func element(a: CountedSet.Element, subsumes b: CountedSet.Element) -> Bool {
-        return CountedSet([a]).isSupersetOf(CountedSet([b]))
+    public static func element(_ a: CountedSet.Element, subsumes b: CountedSet.Element) -> Bool {
+        return CountedSet([a]).isSuperset(of: CountedSet([b]))
     }
 
-    public static func element(a: CountedSet.Element, isDisjointWith b: CountedSet.Element) -> Bool {
+    public static func element(_ a: CountedSet.Element, isDisjointWith b: CountedSet.Element) -> Bool {
         return !CountedSet.element(a, subsumes: b) && !CountedSet.element(b, subsumes: a)
     }
 }
