@@ -34,11 +34,11 @@ public struct CountedSet<T: Hashable>: SetAlgebra {
     }
 
     public init(arrayLiteral elements: CountedSet.Element...) {
-		insert(members: elements)
+		insert(elements)
 	}
 
     public init<S: Sequence>(_ sequence: S) where S.Iterator.Element == Element {
-		insert(members: sequence as! [T])
+		insert(sequence as! [T])
     }
 
     public func countForObject(_ object: Element) -> Int {
@@ -49,7 +49,7 @@ public struct CountedSet<T: Hashable>: SetAlgebra {
         return backingDictionary[member] != nil
     }
 
-	private mutating func insert(members: [T]) {
+	fileprivate mutating func insert(_ members: [T]) {
 		for member in members {
 			let (inserted, existing) = insert(member)
 

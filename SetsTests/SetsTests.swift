@@ -202,7 +202,8 @@ class SetsTests: XCTestCase {
         XCTAssert(countedSet1.count == 2)
 
         countedSet1.remove(1)
-        countedSet1.remove(1)
+		countedSet1.remove(1)
+		countedSet1.remove(1)
         countedSet1.remove(2)
 
         XCTAssert(countedSet1.count == 1)
