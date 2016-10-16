@@ -1,6 +1,6 @@
 ## CountedSet
 
-A generic Swift counted set (multiset) implementation. This structure has been built to conform to Swift 2's SetAlgebraType protocol. See the swift-3 branch for the matching Swift 3 implementation.
+A generic Swift counted set (multiset) implementation. This structure has been built to conform to Swift 3's SetAlgebra protocol.
 
 ## Usage
 
@@ -13,10 +13,16 @@ var countedSet = CountedSet<Int>()
 ~~~
 
 #### Adding Elements to a CountedSet
-Elements are added to a CountedSet via its insert instance method. If the set already contains an element with the same hash value, this will merely increment the count associated with that element. Otherwise, insert will add the element to the set with an initial count of 1.
+Elements are added to a CountedSet via its insert and update methods. `insert` returns a tuple containing a Bool representing whether or not the operation was successful, and an element of the set representing either the matching element that already existed, or the new element that was just inserted. As per updates to SetAlgebra in Swift 3, insertion operations will only happen if the set doesn't already contain the element being inserted, and will not increase the count of an element if it is inserted twice.
 
 ~~~{swift}
-countedSet.insert(i)
+let (success, element) = countedSet.insert(element)
+~~~
+
+`update` is used to update the value of an element that may or may not be in the set. When you call `update`, the a matching element will be returned if it already existed in the set, or nil if it did not, in which case an insertion is performed. In both of these cases, the count for a given element will be as is expected, and you'll probably want to use `update` over `insert` in the general case.
+
+~~~{swift}
+let element = countedSet.update(element)
 ~~~
 
 #### Removing Elements From a CountedSet
@@ -27,7 +33,7 @@ Consider the following example, where the number 42 is inserted into the set twi
 ~~~{swift}
 var countedSet = CountedSet<Int>()
 countedSet.insert(42)
-countedSet.insert(42)
+countedSet.update(42)
 countedSet.remove(42)
 ~~~
 
@@ -35,7 +41,7 @@ countedSet.remove(42)
 The whole point of a CountedSet is that it keeps track of how many times each element has been added to it, which of course means that it provides facilities for accessing this information. In an attempt to keep naming conventions as similar as possible to those of [NSCountedSet](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSCountedSet_Class/#//apple_ref/occ/instm/NSCountedSet/countForObject:) (where possible), the count for a given element is found via its countForObject instance method.
 
 ~~~{swift}
-var countedSet = CountedSet<Int>([1, 4, 4, 2, 2, 2])
+var countedSet = CountedSet([1, 4, 4, 2, 2, 2])
 let ones = countedSet.countForObject(1) // 1
 let twos = countedSet.countForObject(2) // 3
 let fours = countedSet.countForObject(4) // 2
@@ -45,8 +51,8 @@ let fours = countedSet.countForObject(4) // 2
 Since CountedSet is set, it provides many of the features you'd expect from one. These include methods for the creation of unions, intersections, XORs & subtractions. The only real difference between these, and their set equivalents is that they take the count of each object into consideration. For example, when taking the union of two sets, the resultant set will contain all of the elements from both input sets with the counts of each object equaling the sum of their previous two counts.
 
 ~~~{swift}
-var countedSet1 = CountedSet<Int>([1, 1, 1, 2])
-let countedSet2 = CountedSet<Int>([2, 2, 2, 3])
+var countedSet1 = CountedSet([1, 1, 1, 2])
+let countedSet2 = CountedSet([2, 2, 2, 3])
 
 let union = countedSet1.union(countedSet2) // [1, 2, 3]
 let ones = union.countForObject(1) // 3
