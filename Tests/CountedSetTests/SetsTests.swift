@@ -43,15 +43,15 @@ class SetsTests: XCTestCase {
     func testUpdate() {
         var countedSet = CountedSet<Int>([1, 2, 3, 4, 5])
 
-        XCTAssertEqual(countedSet.countForObject(3), 1)
+        XCTAssertEqual(countedSet.count(for: 3), 1)
 
         countedSet.update(with: 3)
         countedSet.update(with: 3, count: 2)
         countedSet.update(with: 3, count: 3)
 
-        XCTAssertEqual(countedSet.countForObject(3), 7)
+        XCTAssertEqual(countedSet.count(for: 3), 7)
     }
-    
+
     func testRemove() {
         var countedSet = CountedSet<Int>()
         countedSet.insert(42)
@@ -71,13 +71,13 @@ class SetsTests: XCTestCase {
     func testRemoveWithCount() {
         var countedSet: CountedSet<Int> = [1,42,42,42,42,42,3,4]
 
-        XCTAssertEqual(countedSet.countForObject(42), 5)
+        XCTAssertEqual(countedSet.count(for: 42), 5)
 
         countedSet.remove(42)
-        XCTAssertEqual(countedSet.countForObject(42), 4)
+        XCTAssertEqual(countedSet.count(for: 42), 4)
 
         countedSet.remove(42, count: 2)
-        XCTAssertEqual(countedSet.countForObject(42), 2)
+        XCTAssertEqual(countedSet.count(for: 42), 2)
 
         countedSet.remove(42, count: 2)
         XCTAssertFalse(countedSet.contains(42))
@@ -89,18 +89,18 @@ class SetsTests: XCTestCase {
     func testCountForObject() {
         var countedSet = CountedSet<Int>([1, 2, 3, 4, 5])
 
-        XCTAssert(countedSet.countForObject(3) == 1)
+        XCTAssert(countedSet.count(for:3) == 1)
 
         countedSet.update(with: 3)
         countedSet.update(with: 3)
 
-        XCTAssert(countedSet.countForObject(3) == 3)
+        XCTAssert(countedSet.count(for:3) == 3)
 
         countedSet.remove(3)
         countedSet.remove(3)
         countedSet.remove(3)
 
-        XCTAssert(countedSet.countForObject(3) == 0)
+        XCTAssert(countedSet.count(for:3) == 0)
     }
 
     func testUnion() {
@@ -199,12 +199,12 @@ class SetsTests: XCTestCase {
         let countedSet1 = CountedSet([1, 2, 3, 1, 2])
         let countedSet2 = CountedSet([1, 2])
 
-        XCTAssert(countedSet1.countForObject(1) == 2)
+        XCTAssert(countedSet1.count(for:1) == 2)
 
         let subtracted = countedSet1.subtracting(countedSet2)
 
         XCTAssert(subtracted.count == 3)
-        XCTAssert(subtracted.countForObject(1) == 1)
+        XCTAssert(subtracted.count(for:1) == 1)
     }
 
     func testIsEmpty() {

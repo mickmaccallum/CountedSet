@@ -41,7 +41,7 @@ public struct CountedSet<T: Hashable>: SetAlgebra {
         insert(sequence as! [T])
     }
 
-    public func countForObject(_ object: Element) -> Int {
+    public func count(for object: Element) -> Int {
         return backingDictionary[object] ?? 0
     }
 
@@ -101,7 +101,7 @@ public struct CountedSet<T: Hashable>: SetAlgebra {
         } else {
             backingDictionary.removeValue(forKey: member)
         }
-        
+
         return member
     }
 
@@ -232,7 +232,7 @@ extension CountedSet: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         return backingDictionary.description
     }
-    
+
     public var debugDescription: String {
         return backingDictionary.debugDescription
     }
