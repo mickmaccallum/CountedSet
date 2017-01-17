@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import Sets
+@testable import CountedSet
 
 class SetsTests: XCTestCase {
 
