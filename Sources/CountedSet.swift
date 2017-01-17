@@ -34,11 +34,11 @@ public struct CountedSet<T: Hashable>: SetAlgebra {
     }
 
     public init(arrayLiteral elements: CountedSet.Element...) {
-		insert(elements)
-	}
+        insert(elements)
+    }
 
     public init<S: Sequence>(_ sequence: S) where S.Iterator.Element == Element {
-		insert(sequence as! [T])
+        insert(sequence as! [T])
     }
 
     public func countForObject(_ object: Element) -> Int {
@@ -49,38 +49,38 @@ public struct CountedSet<T: Hashable>: SetAlgebra {
         return backingDictionary[member] != nil
     }
 
-	fileprivate mutating func insert(_ members: [T]) {
-		for member in members {
-			let (inserted, existing) = insert(member)
+    fileprivate mutating func insert(_ members: [T]) {
+        for member in members {
+            let (inserted, existing) = insert(member)
 
-			if !inserted {
-				update(with: existing)
-			}
-		}
-	}
+            if !inserted {
+                update(with: existing)
+            }
+        }
+    }
 
-	@discardableResult
-	public mutating func insert(_ newMember: T) -> (inserted: Bool, memberAfterInsert: T) {
-		if backingDictionary.keys.contains(newMember) {
-			return (false, newMember)
-		} else {
-			backingDictionary[newMember] = 1
-			return (true, newMember)
-		}
-	}
+    @discardableResult
+    public mutating func insert(_ newMember: T) -> (inserted: Bool, memberAfterInsert: T) {
+        if backingDictionary.keys.contains(newMember) {
+            return (false, newMember)
+        } else {
+            backingDictionary[newMember] = 1
+            return (true, newMember)
+        }
+    }
 
-	@discardableResult
-	public mutating func update(with newMember: T) -> T? {
-		if let existing = backingDictionary[newMember] {
-			backingDictionary[newMember] = (existing + 1)
-			return newMember
-		} else {
-			backingDictionary[newMember] = 1
-			return nil
-		}
-	}
+    @discardableResult
+    public mutating func update(with newMember: T) -> T? {
+        if let existing = backingDictionary[newMember] {
+            backingDictionary[newMember] = (existing + 1)
+            return newMember
+        } else {
+            backingDictionary[newMember] = 1
+            return nil
+        }
+    }
 
-	@discardableResult
+    @discardableResult
     public mutating func remove(_ member: CountedSet.Element) -> CountedSet.Element? {
         guard let value = backingDictionary[member] else {
             return nil
@@ -173,15 +173,15 @@ public struct CountedSet<T: Hashable>: SetAlgebra {
     public func subtracting(_ other: CountedSet<Element>) -> CountedSet<Element> {
         var subtracted = self
         subtracted.subtract(other)
-        
+
         return subtracted
     }
 
     public func isSubset(of other: CountedSet<Element>) -> Bool {
         for (key, _) in backingDictionary {
-			if !other.backingDictionary.keys.contains(key) {
-				return false
-			}
+            if !other.backingDictionary.keys.contains(key) {
+                return false
+            }
         }
 
         return true
@@ -193,9 +193,9 @@ public struct CountedSet<T: Hashable>: SetAlgebra {
 
     public func isSuperset(of other: CountedSet<Element>) -> Bool {
         for (key, _) in other.backingDictionary {
-			if !backingDictionary.keys.contains(key) {
-				return false
-			}
+            if !backingDictionary.keys.contains(key) {
+                return false
+            }
         }
 
         return true
@@ -222,7 +222,7 @@ extension CountedSet: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         return backingDictionary.description
     }
-
+    
     public var debugDescription: String {
         return backingDictionary.debugDescription
     }
