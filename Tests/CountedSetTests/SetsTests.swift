@@ -68,6 +68,24 @@ class SetsTests: XCTestCase {
         XCTAssert(countedSet.count == 1)
     }
 
+    func testRemoveWithCount() {
+        var countedSet: CountedSet<Int> = [1,42,42,42,42,42,3,4]
+
+        XCTAssertEqual(countedSet.countForObject(42), 5)
+
+        countedSet.remove(42)
+        XCTAssertEqual(countedSet.countForObject(42), 4)
+
+        countedSet.remove(42, count: 2)
+        XCTAssertEqual(countedSet.countForObject(42), 2)
+
+        countedSet.remove(42, count: 2)
+        XCTAssertFalse(countedSet.contains(42))
+
+        countedSet.remove(1, count: 55)
+        XCTAssertFalse(countedSet.contains(1))
+    }
+
     func testCountForObject() {
         var countedSet = CountedSet<Int>([1, 2, 3, 4, 5])
 

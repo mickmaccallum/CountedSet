@@ -87,16 +87,21 @@ public struct CountedSet<T: Hashable>: SetAlgebra {
 
     @discardableResult
     public mutating func remove(_ member: CountedSet.Element) -> CountedSet.Element? {
+        return remove(member, count: 1)
+    }
+
+    @discardableResult
+    public mutating func remove(_ member: CountedSet.Element, count: Int = 1) -> CountedSet.Element? {
         guard let value = backingDictionary[member] else {
             return nil
         }
 
-        if value > 1 {
-            backingDictionary[member] = (value - 1)
+        if value > count {
+            backingDictionary[member] = (value - count)
         } else {
             backingDictionary.removeValue(forKey: member)
         }
-
+        
         return member
     }
 
