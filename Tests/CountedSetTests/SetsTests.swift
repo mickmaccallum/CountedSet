@@ -40,6 +40,18 @@ class SetsTests: XCTestCase {
         XCTAssert(countedSet.count == 16)
     }
 
+    func testUpdate() {
+        var countedSet = CountedSet<Int>([1, 2, 3, 4, 5])
+
+        XCTAssertEqual(countedSet.countForObject(3), 1)
+
+        countedSet.update(with: 3)
+        countedSet.update(with: 3, count: 2)
+        countedSet.update(with: 3, count: 3)
+
+        XCTAssertEqual(countedSet.countForObject(3), 7)
+    }
+    
     func testRemove() {
         var countedSet = CountedSet<Int>()
         countedSet.insert(42)
