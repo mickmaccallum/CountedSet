@@ -15,7 +15,7 @@ class SetsTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
@@ -29,21 +29,33 @@ class SetsTests: XCTestCase {
         }
 
         for i in 5...15 {
-			let (inserted, element) = countedSet.insert(i)
+            let (inserted, element) = countedSet.insert(i)
 
-			if !inserted {
-				countedSet.update(with: element)
-			}
+            if !inserted {
+                countedSet.update(with: element)
+            }
         }
 
         print(countedSet)
         XCTAssert(countedSet.count == 16)
     }
 
+    func testUpdate() {
+        var countedSet = CountedSet<Int>([1, 2, 3, 4, 5])
+
+        XCTAssertEqual(countedSet.countForObject(3), 1)
+
+        countedSet.update(with: 3)
+        countedSet.update(with: 3, count: 2)
+        countedSet.update(with: 3, count: 3)
+
+        XCTAssertEqual(countedSet.countForObject(3), 7)
+    }
+    
     func testRemove() {
         var countedSet = CountedSet<Int>()
         countedSet.insert(42)
-		countedSet.update(with: 42)
+        countedSet.update(with: 42)
         countedSet.update(with: 42)
         countedSet.insert(17)
         print(countedSet)
@@ -56,13 +68,31 @@ class SetsTests: XCTestCase {
         XCTAssert(countedSet.count == 1)
     }
 
+    func testRemoveWithCount() {
+        var countedSet: CountedSet<Int> = [1,42,42,42,42,42,3,4]
+
+        XCTAssertEqual(countedSet.countForObject(42), 5)
+
+        countedSet.remove(42)
+        XCTAssertEqual(countedSet.countForObject(42), 4)
+
+        countedSet.remove(42, count: 2)
+        XCTAssertEqual(countedSet.countForObject(42), 2)
+
+        countedSet.remove(42, count: 2)
+        XCTAssertFalse(countedSet.contains(42))
+
+        countedSet.remove(1, count: 55)
+        XCTAssertFalse(countedSet.contains(1))
+    }
+
     func testCountForObject() {
         var countedSet = CountedSet<Int>([1, 2, 3, 4, 5])
 
         XCTAssert(countedSet.countForObject(3) == 1)
 
-		countedSet.update(with: 3)
-		countedSet.update(with: 3)
+        countedSet.update(with: 3)
+        countedSet.update(with: 3)
 
         XCTAssert(countedSet.countForObject(3) == 3)
 
@@ -83,7 +113,7 @@ class SetsTests: XCTestCase {
         countedSet2.insert(2)
         countedSet2.insert(3)
         countedSet2.insert(4)
-        
+
         let union = countedSet1.union(countedSet2)
 
         print(union)
@@ -196,14 +226,14 @@ class SetsTests: XCTestCase {
 
         countedSet1.insert(0)
         countedSet1.insert(1)
-		countedSet1.update(with: 1)
-		countedSet1.update(with: 1)
+        countedSet1.update(with: 1)
+        countedSet1.update(with: 1)
 
         XCTAssert(countedSet1.count == 2)
 
         countedSet1.remove(1)
-		countedSet1.remove(1)
-		countedSet1.remove(1)
+        countedSet1.remove(1)
+        countedSet1.remove(1)
         countedSet1.remove(2)
 
         XCTAssert(countedSet1.count == 1)
@@ -242,21 +272,21 @@ class SetsTests: XCTestCase {
         XCTAssert(countedSet1.isDisjoint(with: countedSet2))
         XCTAssert(!countedSet1.isDisjoint(with: countedSet3))
     }
-
+    
     func testIsDisjoint() {
         let a = 4
         let b = 5
         let c = 4
-
+        
         XCTAssert(CountedSet.element(a, isDisjointWith: b))
         XCTAssert(!CountedSet.element(a, isDisjointWith: c))
     }
-
+    
     func testEquality() {
         let countedSet1 = CountedSet([1, 2, 3])
         let countedSet2 = CountedSet([1, 2, 3])
         let countedSet3 = CountedSet([4, 5, 6])
-
+        
         XCTAssert(countedSet1 == countedSet2)
         XCTAssert(countedSet1 != countedSet3)
     }
