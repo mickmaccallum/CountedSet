@@ -8,8 +8,6 @@
 
 public struct CountedSet<T: Hashable>: SetAlgebra {
     public typealias Element = T
-    public typealias Index = SetIndex<Element>
-    typealias GeneratorType = SetIterator<Element>
 
     fileprivate var backingDictionary = [Element: Int]()
 
@@ -240,4 +238,10 @@ extension CountedSet: CustomStringConvertible, CustomDebugStringConvertible {
 
 public func == <T: Hashable>(lhs: CountedSet<T>, rhs: CountedSet<T>) -> Bool {
     return lhs.backingDictionary == rhs.backingDictionary
+}
+
+extension CountedSet: Sequence {
+	public func makeIterator() -> DictionaryIterator<Element,Int> {
+		return backingDictionary.makeIterator()
+	}
 }
