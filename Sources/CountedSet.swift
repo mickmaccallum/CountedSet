@@ -236,6 +236,18 @@ extension CountedSet: CustomStringConvertible, CustomDebugStringConvertible {
     }
 }
 
+extension CountedSet : Hashable {
+    public var hashValue: Int {
+        var hash = 5381
+        
+        for (element, count) in backingDictionary {
+            hash = (((hash << 5) &+ hash) &+ count) ^ element.hashValue
+        }
+        
+        return hash
+    }
+}
+
 public func == <T: Hashable>(lhs: CountedSet<T>, rhs: CountedSet<T>) -> Bool {
     return lhs.backingDictionary == rhs.backingDictionary
 }
