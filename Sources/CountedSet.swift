@@ -274,8 +274,23 @@ extension CountedSet {
             let (newElement, newCount) = try transform(element, count)
             result.update(with: newElement, count: newCount)
         }
-        
+    
         return result
     }
 
+    public func filter(_ inclusionCount: (Element, Int) throws -> Int) rethrows -> CountedSet<Element> {
+        var result = CountedSet<Element>()
+        
+        for (element, count) in backingDictionary {
+            let newCount = try inclusionCount(element, count)
+            
+            if newCount > 0 {
+                result.update(with: element, count: newCount)
+            }
+        }
+        
+        return result        
+    }
+    
+    
 }

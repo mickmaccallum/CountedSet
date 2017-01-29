@@ -313,4 +313,13 @@ class SetsTests: XCTestCase {
         
         XCTAssertEqual(expected, result)
     }
+    
+    func testFilter() {
+        let countedSet = CountedSet([1, 1, 2, 3, 17, 17, 17])
+        let expected = CountedSet([1, 2, 2, 17, 17])
+        
+        let result = countedSet.filter { $0 % 2 == 0 ? $1 + 1 : $1 - 1 }
+        
+        XCTAssertEqual(expected, result)
+    }
 }
