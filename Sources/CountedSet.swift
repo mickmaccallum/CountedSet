@@ -266,4 +266,16 @@ extension CountedSet {
             try nextPartialResult(result, (element: info.key, count: info.value))
         }
     }
+    
+    public func map<U>(_ transform: (Element, Int) throws -> (element:U, count:Int)) rethrows -> CountedSet<U> {
+        var result = CountedSet<U>()
+        
+        for (element, count) in backingDictionary {
+            let (newElement, newCount) = try transform(element, count)
+            result.update(with: newElement, count: newCount)
+        }
+        
+        return result
+    }
+
 }

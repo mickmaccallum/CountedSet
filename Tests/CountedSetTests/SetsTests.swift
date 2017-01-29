@@ -304,4 +304,13 @@ class SetsTests: XCTestCase {
         
         XCTAssertEqual(33, sum)
     }
+    
+    func testMap() {
+        let countedSet = CountedSet([1, 1, 2, 17])
+        let expected = CountedSet([0.5, 0.5, 0.5, 0.5, 1, 1, 8.5, 8.5])
+        
+        let result = countedSet.map { (element: 0.5 * Double($0), count: 2 * $1) }
+        
+        XCTAssertEqual(expected, result)
+    }
 }
