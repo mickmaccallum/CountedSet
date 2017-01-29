@@ -278,6 +278,18 @@ extension CountedSet {
         return result
     }
 
+    public func flatMap<U>(_ transform: (Element, Int) throws -> (element:U, count:Int)?) rethrows -> CountedSet<U> {
+        var result = CountedSet<U>()
+        
+        for (element, count) in backingDictionary {
+            if let (newElement, newCount) = try transform(element, count) {
+                result.update(with: newElement, count: newCount)
+            }
+        }
+        
+        return result
+    }
+
     public func filter(_ inclusionCount: (Element, Int) throws -> Int) rethrows -> CountedSet<Element> {
         var result = CountedSet<Element>()
         
@@ -289,7 +301,7 @@ extension CountedSet {
             }
         }
         
-        return result        
+        return result
     }
     
     
