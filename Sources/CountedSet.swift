@@ -6,7 +6,7 @@
 //  Copyright © 2015 0x7fffffff. All rights reserved.
 //
 
-public struct CountedSet<T: Hashable>: SetAlgebra {
+public struct CountedSet<T: Hashable>: SetAlgebra, ExpressibleByArrayLiteral {
     public typealias Element = T
 
     fileprivate var backingDictionary = [Element: Int]()
@@ -258,4 +258,12 @@ extension CountedSet: Sequence {
 	public func makeIterator() -> DictionaryIterator<Element,Int> {
 		return backingDictionary.makeIterator()
 	}
+}
+
+extension CountedSet {
+    public func reduce<Result>(_ initialResult: Result, _ nextPartialResult: (Result, (element: Element, count:Int)) throws -> Result) rethrows -> Result {
+        return try backingDictionary.reduce(initialResult) { (result, info) in
+            try nextPartialResult(result, (element: info.key, count: info.value))
+        }
+    }
 }

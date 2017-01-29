@@ -290,4 +290,18 @@ class SetsTests: XCTestCase {
         XCTAssert(countedSet1 == countedSet2)
         XCTAssert(countedSet1 != countedSet3)
     }
+    
+    func testHashValue() {
+        let countedSet1 = CountedSet([17, 10, 75])
+        let countedSet2 = CountedSet([17, 10, 75])
+        
+        XCTAssertEqual(countedSet1.hashValue, countedSet2.hashValue)
+    }
+    
+    func testReduce() {
+        let countedSet = CountedSet([1, 1, 2, 3, 5, 8, 13])
+        let sum = countedSet.reduce(0) { $0 + $1.count * $1.element }
+        
+        XCTAssertEqual(33, sum)
+    }
 }
