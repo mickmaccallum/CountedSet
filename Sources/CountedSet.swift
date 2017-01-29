@@ -241,7 +241,9 @@ extension CountedSet : Hashable {
         var hash = 5381
         
         for (element, count) in backingDictionary {
-            hash = (((hash << 5) &+ hash) &+ count) ^ element.hashValue
+            for _ in 1...count {
+                hash = ((hash << 5) &+ hash) &+ element.hashValue
+            }
         }
         
         return hash
