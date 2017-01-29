@@ -6,7 +6,7 @@
 //  Copyright © 2015 0x7fffffff. All rights reserved.
 //
 
-public struct CountedSet<T: Hashable>: SetAlgebra, ExpressibleByArrayLiteral {
+public struct CountedSet<T: Hashable>: SetAlgebra {
     public typealias Element = T
 
     fileprivate var backingDictionary = [Element: Int]()
