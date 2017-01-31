@@ -261,13 +261,7 @@ extension CountedSet: Sequence {
 }
 
 extension CountedSet {
-    public func reduce<Result>(_ initialResult: Result, _ nextPartialResult: (Result, (element: Element, count:Int)) throws -> Result) rethrows -> Result {
-        return try backingDictionary.reduce(initialResult) { (result, info) in
-            try nextPartialResult(result, (element: info.key, count: info.value))
-        }
-    }
-    
-    public func map<U>(_ transform: (Element, Int) throws -> (element:U, count:Int)) rethrows -> CountedSet<U> {
+    public func mapToCountedSet<U>(_ transform: (Element, Int) throws -> (element:U, count:Int)) rethrows -> CountedSet<U> {
         var result = CountedSet<U>()
         
         for (element, count) in backingDictionary {
@@ -278,7 +272,7 @@ extension CountedSet {
         return result
     }
 
-    public func flatMap<U>(_ transform: (Element, Int) throws -> (element:U, count:Int)?) rethrows -> CountedSet<U> {
+    public func flatMapToCountedSet<U>(_ transform: (Element, Int) throws -> (element:U, count:Int)?) rethrows -> CountedSet<U> {
         var result = CountedSet<U>()
         
         for (element, count) in backingDictionary {
@@ -290,7 +284,7 @@ extension CountedSet {
         return result
     }
 
-    public func filter(_ inclusionCount: (Element, Int) throws -> Int) rethrows -> CountedSet<Element> {
+    public func filterToCountedSet(_ inclusionCount: (Element, Int) throws -> Int) rethrows -> CountedSet<Element> {
         var result = CountedSet<Element>()
         
         for (element, count) in backingDictionary {
