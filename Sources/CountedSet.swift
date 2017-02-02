@@ -236,6 +236,20 @@ extension CountedSet: CustomStringConvertible, CustomDebugStringConvertible {
     }
 }
 
+extension CountedSet : Hashable {
+    public var hashValue: Int {
+        var hash = 5381
+        
+        for (element, count) in backingDictionary {
+            for _ in 1...count {
+                hash = ((hash << 5) &+ hash) &+ element.hashValue
+            }
+        }
+        
+        return hash
+    }
+}
+
 public func == <T: Hashable>(lhs: CountedSet<T>, rhs: CountedSet<T>) -> Bool {
     return lhs.backingDictionary == rhs.backingDictionary
 }
@@ -244,4 +258,45 @@ extension CountedSet: Sequence {
 	public func makeIterator() -> DictionaryIterator<Element,Int> {
 		return backingDictionary.makeIterator()
 	}
+}
+
+extension CountedSet {
+    public func mapToCountedSet<U>(_ transform: (Element, Int) throws -> (element:U, count:Int)) rethrows -> CountedSet<U> {
+        var result = CountedSet<U>()
+        
+        for (element, count) in backingDictionary {
+            let (newElement, newCount) = try transform(element, count)
+            result.update(with: newElement, count: newCount)
+        }
+    
+        return result
+    }
+
+    public func flatMapToCountedSet<U>(_ transform: (Element, Int) throws -> (element:U, count:Int)?) rethrows -> CountedSet<U> {
+        var result = CountedSet<U>()
+        
+        for (element, count) in backingDictionary {
+            if let (newElement, newCount) = try transform(element, count) {
+                result.update(with: newElement, count: newCount)
+            }
+        }
+        
+        return result
+    }
+
+    public func filterToCountedSet(_ inclusionCount: (Element, Int) throws -> Int) rethrows -> CountedSet<Element> {
+        var result = CountedSet<Element>()
+        
+        for (element, count) in backingDictionary {
+            let newCount = try inclusionCount(element, count)
+            
+            if newCount > 0 {
+                result.update(with: element, count: newCount)
+            }
+        }
+        
+        return result
+    }
+    
+    
 }

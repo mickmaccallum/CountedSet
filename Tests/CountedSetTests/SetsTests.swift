@@ -290,4 +290,38 @@ class SetsTests: XCTestCase {
         XCTAssert(countedSet1 == countedSet2)
         XCTAssert(countedSet1 != countedSet3)
     }
+    
+    func testHashValue() {
+        let countedSet1 = CountedSet([17, 10, 75])
+        let countedSet2 = CountedSet([17, 10, 75])
+        
+        XCTAssertEqual(countedSet1.hashValue, countedSet2.hashValue)
+    }
+    
+    func testMapToCountedSet() {
+        let countedSet = CountedSet([1, 1, 2, 17])
+        let expected = CountedSet([0.5, 0.5, 0.5, 0.5, 1, 1, 8.5, 8.5])
+        
+        let result = countedSet.mapToCountedSet { (element: 0.5 * Double($0), count: 2 * $1) }
+        
+        XCTAssertEqual(expected, result)
+    }
+
+    func testFlatMapToCountedSet() {
+        let countedSet = CountedSet([1, 2, 3, 4, 5, 5])
+        let expected = CountedSet([1.5, 1.5, 3.5, 3.5, 5.5, 5.5, 5.5])
+        
+        let result = countedSet.flatMapToCountedSet { $0 % 2 == 0 ? nil : (element: 0.5 + Double($0), count: 1 + $1) }
+        
+        XCTAssertEqual(expected, result)
+    }
+
+    func testFilterToCountedSet() {
+        let countedSet = CountedSet([1, 1, 2, 3, 17, 17, 17])
+        let expected = CountedSet([1, 2, 2, 17, 17])
+        
+        let result = countedSet.filterToCountedSet { $0 % 2 == 0 ? $1 + 1 : $1 - 1 }
+        
+        XCTAssertEqual(expected, result)
+    }
 }
