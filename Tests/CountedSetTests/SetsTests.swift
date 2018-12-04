@@ -324,4 +324,15 @@ class SetsTests: XCTestCase {
         
         XCTAssertEqual(expected, result)
     }
+    
+    func testIteration() {
+        let countedSet = CountedSet([1, 1, 2, 3, 17, 17, 17])
+        var iteratedValues = Set<Int>()
+        
+        for value in countedSet {
+            iteratedValues.insert(value)
+        }
+        
+        XCTAssertEqual(iteratedValues, Set(countedSet))
+    }
 }

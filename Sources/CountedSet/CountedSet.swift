@@ -255,9 +255,10 @@ public func == <T: Hashable>(lhs: CountedSet<T>, rhs: CountedSet<T>) -> Bool {
 }
 
 extension CountedSet: Sequence {
-	public func makeIterator() -> DictionaryIterator<Element,Int> {
-		return backingDictionary.makeIterator()
-	}
+    public func makeIterator() -> AnyIterator<Element> {
+        var keysIterator = backingDictionary.keys.makeIterator()
+        return AnyIterator { keysIterator.next() }
+    }
 }
 
 extension CountedSet {
