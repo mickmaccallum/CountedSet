@@ -72,4 +72,8 @@ countedSet.remove(3)
 countedSet.isEmpty // true
 ~~~
 
+## Development
+
+To generate Xcode project invoke `make generate`. You can also generate and open Xcode project by invoking `make open`.
+
 More documentation to come...
