@@ -82,6 +82,17 @@ public struct CountedSet<T: Hashable>: SetAlgebra {
             return nil
         }
     }
+    
+    @discardableResult
+    public mutating func updateCount(for newMember: T, newCount: Int) -> T? {
+        if contains(newMember) {
+            backingDictionary[newMember] = newCount
+            return newMember
+        } else {
+            backingDictionary[newMember] = newCount
+            return nil
+        }
+    }
 
     @discardableResult
     public mutating func remove(_ member: CountedSet.Element) -> CountedSet.Element? {
